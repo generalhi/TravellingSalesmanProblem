@@ -32,9 +32,9 @@ namespace Helpers
             {
                 return Vector2.positiveInfinity;
             }
-            
+
             var k = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (a2.y - a1.y);
-            
+
             var uAch = (b2.x - b1.x) * (a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x);
             var uBch = (a2.x - a1.x) * (a1.y - b1.y) - (a2.y - a1.y) * (a1.x - b1.x);
 
@@ -52,7 +52,7 @@ namespace Helpers
 
             var uA = uAch / k;
             var uB = uBch / k;
-            
+
             if (uA < 0f || uA > 1f || uB < 0f || uB > 1f)
             {
                 // No intersection point

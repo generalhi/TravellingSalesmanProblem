@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tables
 {
     private List<Vector3> _points;
-    private int[] _elements;
+    private int[] _indices;
     private ConnectionsTable _connections;
     private int[,] _multiplicity;
     private float[] _pathLength;
@@ -19,10 +19,10 @@ public class Tables
 
         var f = MathHelper.Factorial(_points.Count - 1);
         _multiplicity = new int[f, _points.Count - 1];
-        _pathLength = new float[MathHelper.Factorial(_points.Count - 1)];
+        _pathLength = new float[f];
 
-        var m = 0;
-        Step(_elements, 0, _elements.Length - 1, ref m);
+        var multiplicityIndex = 0;
+        Step(_indices, 0, _indices.Length - 1, ref multiplicityIndex);
 
         CalcPathLength();
         _minIndex = GetMinPathIndex();
@@ -30,27 +30,27 @@ public class Tables
 
     private void CreateTableElements()
     {
-        _elements = new int[_points.Count - 1];
+        _indices = new int[_points.Count - 1];
         for (var i = 0; i < _points.Count - 1; i++)
         {
-            _elements[i] = i + 1;
+            _indices[i] = i + 1;
         }
     }
 
-    private void Step(int[] a, int i, int n, ref int m)
+    private void Step(int[] indices, int i, int n, ref int multiplicityIndex)
     {
         if (i == n)
         {
-            ArrayHelper.Copy(in a, ref _multiplicity, m);
-            m++;
+            ArrayHelper.Copy(in indices, ref _multiplicity, multiplicityIndex);
+            multiplicityIndex++;
         }
         else
         {
             for (var j = i; j <= n; j++)
             {
-                ArrayHelper.Swap(ref a[i], ref a[j]);
-                Step(a, i + 1, n, ref m);
-                ArrayHelper.Swap(ref a[i], ref a[j]);
+                ArrayHelper.Swap(ref indices[i], ref indices[j]);
+                Step(indices, i + 1, n, ref multiplicityIndex);
+                ArrayHelper.Swap(ref indices[i], ref indices[j]);
             }
         }
     }
@@ -63,14 +63,14 @@ public class Tables
             var a = 0;
             var b = _multiplicity[i, 0];
             distance += _connections[a, b].Distance;
-            for (var j = 0; j < _elements.Length - 1; j++)
+            for (var j = 0; j < _indices.Length - 1; j++)
             {
                 a = _multiplicity[i, j];
                 b = _multiplicity[i, j + 1];
                 distance += _connections[a, b].Distance;
             }
 
-            a = _multiplicity[i, _elements.Length - 1];
+            a = _multiplicity[i, _indices.Length - 1];
             b = 0;
             distance += _connections[a, b].Distance;
 
@@ -117,13 +117,13 @@ public class Tables
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(_points[0], _points[_multiplicity[_minIndex, 0]]);
-        for (var i = 0; i < _elements.Length - 1; i++)
+        for (var i = 0; i < _indices.Length - 1; i++)
         {
             var a = _multiplicity[_minIndex, i];
             var b = _multiplicity[_minIndex, i + 1];
             Gizmos.DrawLine(_points[a], _points[b]);
         }
 
-        Gizmos.DrawLine(_points[_multiplicity[_minIndex, _elements.Length - 1]], _points[0]);
+        Gizmos.DrawLine(_points[_multiplicity[_minIndex, _indices.Length - 1]], _points[0]);
     }
 }

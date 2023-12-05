@@ -67,7 +67,7 @@ public class ConnectionsTable
                 // Line A
                 var a1 = new Vector2(points[ai].x, points[ai].z);
                 var a2 = new Vector2(points[aj].x, points[aj].z);
-                
+
                 for (var bi = 0; bi < _size; bi++)
                 {
                     for (var bj = bi + 1; bj < _size; bj++)
@@ -76,7 +76,7 @@ public class ConnectionsTable
                         {
                             continue;
                         }
-                        
+
                         // Line B
                         var b1 = new Vector2(points[bi].x, points[bi].z);
                         var b2 = new Vector2(points[bj].x, points[bj].z);
@@ -93,12 +93,12 @@ public class ConnectionsTable
                         var distB = _connections[bi, bj].Distance;
                         if (distA > distB)
                         {
-                            _connections[ai, aj].Enable = false;    
+                            _connections[ai, aj].Enable = false;
                         }
                         else if(Math.Abs(distA - distB) < 0.0001f)
                         {
                             _connections[ai, aj].Enable = false;
-                            _connections[bi, bj].Enable = false;    
+                            _connections[bi, bj].Enable = false;
                         }
                         else
                         {
